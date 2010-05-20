@@ -525,7 +525,7 @@ static void ips_disable_cpu_turbo(struct ips_driver *ips)
  */
 static bool ips_gpu_busy(struct ips_driver *ips)
 {
-	if (!ips_gpu_turbo_enabled(ips))
+	if (!ips->gpu_turbo_enabled)
 		return false;
 
 	return ips->gpu_busy();
@@ -1587,7 +1587,7 @@ static int ips_probe(struct pci_dev *dev, const struct pci_device_id *id)
 		ips->poll_turbo_status = true;
 
 	if (!ips_get_i915_syms(ips)) {
-		dev_info(&dev->dev, "failed to get i915 symbols, graphics turbo disabled until i915 loads\n");
+		dev_err(&dev->dev, "failed to get i915 symbols, graphics turbo disabled\n");
 		ips->gpu_turbo_enabled = false;
 	} else {
 		dev_dbg(&dev->dev, "graphics turbo enabled\n");
